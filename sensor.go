@@ -374,22 +374,27 @@ func (s *Sensor) GetLux() (float32, error) {
 		return 0.0, err
 	}
 
-	var lux float32
+	// check if map key values exist
+	intervals, ok := luxVals[s.vals.interval]
 
-	// check keys exist in map
-	if _, ok := luxVals[s.vals.interval]; ok {
-		if _, ok := luxVals[s.vals.interval][s.vals.pd]; ok {
-			if _, ok := luxVals[s.vals.interval][s.vals.pd][s.vals.gain]; ok {
-				lux = float32(als) * luxVals[s.vals.interval][s.vals.pd][s.vals.gain]
-			} else {
-				return 0.0, fmt.Errorf("unknown Gain in lux map")
-			}
-		} else {
-			return 0.0, fmt.Errorf("unknown PD in lux map")
-		}
-	} else {
+	if !ok {
 		return 0.0, fmt.Errorf("unknown Interval in lux map")
 	}
 
-	return lux, err
+	pds, ok := intervals[s.vals.pd]
+
+	if !ok {
+		return 0.0, fmt.Errorf("unknown PD in lux map")
+	}
+
+	gainVal, ok := pds[s.vals.gain]
+
+	if !ok {
+		return 0.0, fmt.Errorf("unknown Gain in lux map")
+	}
+
+	// calculate lux
+	lux := float32(als) * gainVal
+
+	return lux, nil
 }
