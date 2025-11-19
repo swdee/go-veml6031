@@ -2,6 +2,7 @@ package veml6031
 
 import (
 	"fmt"
+
 	"github.com/swdee/go-i2c"
 )
 
@@ -99,6 +100,21 @@ func NewSensor(dev string, addr uint8) (*Sensor, error) {
 
 // init initializes the sensor at start up
 func (s *Sensor) init() error {
+
+	// clear SD bit in ALS_CONF0 (bandgap + LDO ON)
+	if err := s.bitMask(ALS_CONF0, SD_MASK, SD_ON); err != nil {
+		return fmt.Errorf("error clearing SD bit: %w", err)
+	}
+
+	// clear ALS_IR_SD bit in ALS_CONF1 (ALS + IR channels ON)
+	if err := s.bitMask(ALS_CONF1, ALS_IR_SD_MASK, ALS_IR_SD_ON); err != nil {
+		return fmt.Errorf("error clearing ALS_IR_SD bit: %w", err)
+	}
+
+	// set ALS_CAL = 1 as required by datasheet
+	if err := s.bitMask(ALS_CONF1, ALS_CAL_MASK, ALS_CAL_ENABLE); err != nil {
+		return fmt.Errorf("error setting ALS_CAL bit: %w", err)
+	}
 
 	// set sensor to 100ms
 	if err := s.SetAmbientIntegrationTime(100); err != nil {

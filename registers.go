@@ -48,7 +48,8 @@ const (
 	ALS_PERS_4    = 1 << 2
 	ALS_PERS_8    = (1 << 2) | (1 << 1)
 
-	ALS_CAL = ^uint8(1 << 0)
+	ALS_CAL_MASK   = ^uint8(1 << 0)
+	ALS_CAL_ENABLE = 1 << 0
 
 	ALS_IF_H = (1 << 1)
 	ALS_IF_L = (1 << 2)
