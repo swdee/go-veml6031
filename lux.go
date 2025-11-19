@@ -96,7 +96,7 @@ var (
 				ALS_GAIN_2X:         0.0272,
 				ALS_GAIN_1X:         0.0544,
 				ALS_GAIN_TWO_THIRDS: 0.0824,
-				ALS_GAIN_HALF:       0.0188,
+				ALS_GAIN_HALF:       0.1088,
 			},
 			PD_DIV4_44: {
 				ALS_GAIN_2X:         0.0068,
